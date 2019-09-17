@@ -15,27 +15,30 @@
  */
 package com.alibaba.nacos.naming.healthcheck;
 
-import com.alibaba.nacos.api.naming.pojo.AbstractHealthChecker;
-import com.alibaba.nacos.naming.core.Cluster;
-import com.alibaba.nacos.naming.core.Instance;
-import com.alibaba.nacos.naming.misc.Loggers;
-import com.alibaba.nacos.naming.misc.SwitchDomain;
-import com.alibaba.nacos.naming.monitor.MetricsMonitor;
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
-import io.netty.channel.ConnectTimeoutException;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
+import static com.alibaba.nacos.naming.misc.Loggers.SRV_LOG;
 import java.net.SocketTimeoutException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.concurrent.*;
-
-import static com.alibaba.nacos.naming.misc.Loggers.SRV_LOG;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeoutException;
+import com.alibaba.nacos.api.naming.pojo.AbstractHealthChecker;
+import com.alibaba.nacos.naming.core.Cluster;
+import com.alibaba.nacos.naming.core.Instance;
+import com.alibaba.nacos.naming.misc.Loggers;
+import com.alibaba.nacos.naming.misc.SwitchDomain;
+import com.alibaba.nacos.naming.monitor.MetricsMonitor;
+import com.mysql.cj.jdbc.MysqlDataSource;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import io.netty.channel.ConnectTimeoutException;
 
 /**
  * MYSQL health check processor
